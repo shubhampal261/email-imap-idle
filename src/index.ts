@@ -1,18 +1,21 @@
 import Imap, { ImapMessage, ImapFetch } from 'imap';
 import { simpleParser, ParsedMail, Attachment } from 'mailparser';
 import * as fs from 'fs';
-import { inspect } from 'util';
+import dotenv from 'dotenv';
 
-const imap = new Imap({
-  user: 'my.example.email@gmail.com',
-  password: 'xxxxxxxxxxxxxxxx',
-  host: 'imap.gmail.com',
-  port: 993,
-  tls: true,
+dotenv.config();
+
+const imapConfig: Imap.Config = {
+  user: process.env.IMAP_USER,
+  password: process.env.IMAP_PASSWORD,
+  host: process.env.IMAP_HOST,
+  port: parseInt(process.env.IMAP_PORT || '993'),
+  tls:  process.env.TLS_ENABLED === 'true',
   tlsOptions: {
     rejectUnauthorized: false,
   },
-});
+};
+const imap = new Imap(imapConfig);
 
 function openInbox(callback: (err: Error | null, box: Imap.Box) => void): void {
   imap.openBox('INBOX', false, callback);
