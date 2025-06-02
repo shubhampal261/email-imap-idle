@@ -2,6 +2,7 @@ import Imap, { ImapMessage, ImapFetch } from 'imap';
 import { simpleParser, ParsedMail, Attachment } from 'mailparser';
 import * as fs from 'fs';
 import dotenv from 'dotenv';
+import axios from 'axios';
 
 dotenv.config();
 
@@ -34,6 +35,7 @@ function parseMessage(msg: ImapMessage): void {
         const parsed: ParsedMail = await simpleParser(buffer);
         console.log('📧 New Email:');
         console.log(`From: ${parsed.from?.text}`);
+        console.log(`Date: ${parsed.date}`);
         console.log(`Subject: ${parsed.subject}`);
         console.log(`Text: ${parsed.text}`);
         parsed.attachments?.forEach((attachment: Attachment, index: number) => {
@@ -49,6 +51,19 @@ function parseMessage(msg: ImapMessage): void {
           // const outPutFileName = `${parsed.subject?.toLowerCase?.()?.replace?.(/\s+/g, '_') + "_" + new Date().toISOString().replace(/-:/g, '')}_attachment_${index + 1}.${attachment.contentType.split('/')[1]}`;
           const outputFilePath = `${outPutDirPath}/${attachment.filename}`;
           fs.writeFileSync(outputFilePath, Buffer.from(attachment.content));
+
+          /**
+           * write logic to process the attachment file here
+           */
+          // axios.post('http://localhost:3000/api/v1/process-attachment', {
+          //   attachment: attachment.content,
+          //   subject: parsed.subject,
+          //   date: parsed.date,
+          //   from: parsed.from?.text,
+          // }, {
+          //   headers: { token: token }
+          // });
+
         });
       } catch (err) {
         console.error('❌ Failed to parse email:', err);

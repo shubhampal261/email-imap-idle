@@ -15,6 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "@aws-sdk/client-sqs": "^3.777.0",
+    "axios": "^1.9.0",
     "dotenv": "^16.4.7",
     "imap": "^0.8.19",
     "mailparser": "^3.7.3",
